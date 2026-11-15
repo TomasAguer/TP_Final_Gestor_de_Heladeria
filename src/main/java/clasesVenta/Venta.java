@@ -1,3 +1,5 @@
+package clasesVenta;
+
 import excepciones.StockInsuficienteException;
 import excepciones.VentaInvalidaException;
 
@@ -44,7 +46,7 @@ public class Venta {
         return total;
     }
 
-    //Protected para que VentaADomicilio pueda sumarle el envio
+    //Protected para que clasesVenta.VentaADomicilio pueda sumarle el envio
     protected void setTotal(double total) {
         this.total = total;
     }
@@ -56,7 +58,7 @@ public class Venta {
 
     ///Metodos
     //Crea el detalle adentro de la venta, validando que haya stock
-    public void agregarDetalle(Producto p, double cantidad) {
+    public void agregarDetalle(Producto p, double cantidad) throws  StockInsuficienteException {
         if (p != null && cantidad > p.getStock()) {
             throw new StockInsuficienteException("No hay stock suficiente de " + p.getNombre());
         }
@@ -74,7 +76,7 @@ public class Venta {
     }
 
     //Cierra la venta: al menos un detalle y se descuenta el stock
-    public void confirmarVenta() {
+    public void confirmarVenta() throws VentaInvalidaException {
         if (detalles.isEmpty()) {
             throw new VentaInvalidaException("No se puede confirmar una venta sin productos");
         }
@@ -88,7 +90,7 @@ public class Venta {
 
     @Override
     public String toString() {
-        return "Venta{" +
+        return "clasesVenta.Venta{" +
                 "id=" + id +
                 ", fecha=" + fecha +
                 ", metodoPago='" + metodoPago + '\'' +

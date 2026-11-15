@@ -1,3 +1,5 @@
+package clasesVenta;
+
 import enums.EstadoEnvio;
 import excepciones.VentaInvalidaException;
 import interfaz.EnvioADomicilio;
@@ -12,9 +14,9 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
     private EstadoEnvio estado;
 
     ///Constructor
-    public VentaADomicilio(String metodoPago, String direccionEntrega) {
+    public VentaADomicilio(String metodoPago, String direccionEntrega) throws VentaInvalidaException {
         super(metodoPago);
-        if (direccionEntrega == null || direccionEntrega.isBlank()) {
+        if (direccionEntrega == null || direccionEntrega.isBlank())  {
             throw new VentaInvalidaException("La direccion de entrega es obligatoria");
         }
         this.direccionEntrega = direccionEntrega;
@@ -79,7 +81,7 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
 
     @Override
     public String toString() {
-        return "VentaADomicilio{" +
+        return "clasesVenta.VentaADomicilio{" +
                 "direccionEntrega='" + direccionEntrega + '\'' +
                 ", costoEnvio=" + costoEnvio +
                 ", estado=" + estado +

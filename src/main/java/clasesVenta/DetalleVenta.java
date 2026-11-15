@@ -1,3 +1,5 @@
+package clasesVenta;
+
 import excepciones.VentaInvalidaException;
 
 public class DetalleVenta {
@@ -40,7 +42,7 @@ public class DetalleVenta {
 
     @Override
     public String toString() {
-        return "DetalleVenta{" +
+        return "clasesVenta.DetalleVenta{" +
                 "producto=" + producto.getNombre() +
                 ", cantidad=" + cantidad +
                 ", precioUnitario=" + precioUnitario +

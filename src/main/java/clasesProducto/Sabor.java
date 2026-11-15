@@ -1,3 +1,5 @@
+package clasesProducto;
+
 public class Sabor {
     private int id;
     private String nombre;
