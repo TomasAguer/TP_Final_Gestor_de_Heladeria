@@ -29,7 +29,7 @@ public class ProductoEnvasado extends Producto {
 
     @Override
     public String toString() {
-        return "clasesProducto.ProductoEnvasado{" +
+        return "ProductoEnvasado{" +
                 "tipoProducto='" + tipoProducto + '\'' +
                 "} " + super.toString();
     }

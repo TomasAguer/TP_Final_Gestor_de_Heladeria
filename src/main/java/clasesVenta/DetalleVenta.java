@@ -1,5 +1,6 @@
 package clasesVenta;
 
+import clasesProducto.Producto;
 import excepciones.VentaInvalidaException;
 
 public class DetalleVenta {
@@ -8,8 +9,7 @@ public class DetalleVenta {
     private double cantidad;
     private double precioUnitario; //Se guarda aparte por si despues cambia el precio del producto
 
-    ///Constructor
-    public DetalleVenta(Producto producto, double cantidad) {
+    public DetalleVenta(Producto producto, double cantidad) throws VentaInvalidaException {
         if (producto == null) {
             throw new VentaInvalidaException("El producto no puede ser nulo");
         }
@@ -21,7 +21,6 @@ public class DetalleVenta {
         this.precioUnitario = producto.getPrecio();
     }
 
-    ///Gets and Sets
     public Producto getProducto() {
         return producto;
     }
@@ -34,7 +33,6 @@ public class DetalleVenta {
         return precioUnitario;
     }
 
-    ///Metodos
     //Subtotal de la linea = cantidad * precio unitario
     public double calcularSubtotal() {
         return cantidad * precioUnitario;
@@ -42,7 +40,7 @@ public class DetalleVenta {
 
     @Override
     public String toString() {
-        return "clasesVenta.DetalleVenta{" +
+        return "DetalleVenta{" +
                 "producto=" + producto.getNombre() +
                 ", cantidad=" + cantidad +
                 ", precioUnitario=" + precioUnitario +

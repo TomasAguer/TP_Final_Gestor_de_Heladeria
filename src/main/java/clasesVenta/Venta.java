@@ -1,31 +1,33 @@
 package clasesVenta;
 
+import clasesProducto.Producto;
 import excepciones.StockInsuficienteException;
 import excepciones.VentaInvalidaException;
+import interfaz.Identificable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Venta {
+public class Venta implements Identificable {
     private static int contador = 1;
 
     private int id;
     private LocalDateTime fecha;
     private String metodoPago;
     private double total;
-    private List<DetalleVenta> detalles; //Composicion: los detalles no existen sin la venta
+    private List<DetalleVenta> detalles;
+    private boolean confirmada;
 
-    ///Constructor
     public Venta(String metodoPago) {
         this.id = contador++;
         this.fecha = LocalDateTime.now();
         this.metodoPago = metodoPago;
         this.total = 0;
         this.detalles = new ArrayList<>();
+        this.confirmada = false;
     }
 
-    ///Gets and Sets
     public int getId() {
         return id;
     }
@@ -46,7 +48,11 @@ public class Venta {
         return total;
     }
 
-    //Protected para que clasesVenta.VentaADomicilio pueda sumarle el envio
+    public boolean isConfirmada() {
+        return confirmada;
+    }
+
+    //Protected para que VentaADomicilio pueda sumarle el envio
     protected void setTotal(double total) {
         this.total = total;
     }
@@ -56,13 +62,26 @@ public class Venta {
         return new ArrayList<>(detalles);
     }
 
-    ///Metodos
     //Crea el detalle adentro de la venta, validando que haya stock
-    public void agregarDetalle(Producto p, double cantidad) throws  StockInsuficienteException {
-        if (p != null && cantidad > p.getStock()) {
+    public void agregarDetalle(Producto p, double cantidad) throws StockInsuficienteException, VentaInvalidaException {
+        if (confirmada) {
+            throw new VentaInvalidaException("La venta ya fue confirmada, no se pueden agregar productos");
+        }
+        if (p != null && cantidadSolicitada(p) + cantidad > p.getStock()) {
             throw new StockInsuficienteException("No hay stock suficiente de " + p.getNombre());
         }
         detalles.add(new DetalleVenta(p, cantidad));
+    }
+
+    //Suma cuanto se pidio ya de ese producto en esta venta
+    private double cantidadSolicitada(Producto p) {
+        double suma = 0;
+        for (DetalleVenta d : detalles) {
+            if (d.getProducto().getId() == p.getId()) {
+                suma += d.getCantidad();
+            }
+        }
+        return suma;
     }
 
     //Suma los subtotales de todos los detalles
@@ -77,6 +96,9 @@ public class Venta {
 
     //Cierra la venta: al menos un detalle y se descuenta el stock
     public void confirmarVenta() throws VentaInvalidaException {
+        if (confirmada) {
+            throw new VentaInvalidaException("La venta esta confirmada");
+        }
         if (detalles.isEmpty()) {
             throw new VentaInvalidaException("No se puede confirmar una venta sin productos");
         }
@@ -86,11 +108,12 @@ public class Venta {
         }
         this.fecha = LocalDateTime.now();
         calcularTotal();
+        this.confirmada = true;
     }
 
     @Override
     public String toString() {
-        return "clasesVenta.Venta{" +
+        return "Venta{" +
                 "id=" + id +
                 ", fecha=" + fecha +
                 ", metodoPago='" + metodoPago + '\'' +

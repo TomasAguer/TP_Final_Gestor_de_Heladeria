@@ -13,7 +13,6 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
     private double costoEnvio;
     private EstadoEnvio estado;
 
-    ///Constructor
     public VentaADomicilio(String metodoPago, String direccionEntrega) throws VentaInvalidaException {
         super(metodoPago);
         if (direccionEntrega == null || direccionEntrega.isBlank())  {
@@ -24,7 +23,6 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
         this.estado = EstadoEnvio.PENDIENTE; //Toda venta a domicilio arranca pendiente
     }
 
-    ///Gets and Sets
     public String getDireccionEntrega() {
         return direccionEntrega;
     }
@@ -42,7 +40,6 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
         return estado;
     }
 
-    ///Metodos
     //Al total de los productos le suma el costo de envio
     @Override
     public double calcularTotal() {
@@ -69,7 +66,7 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
 
     //Si el envio ya fue entregado o cancelado no se puede cambiar mas
     @Override
-    public void actualizarEstado(EstadoEnvio nuevo) {
+    public void actualizarEstado(EstadoEnvio nuevo) throws  VentaInvalidaException {
         if (nuevo == null) {
             throw new VentaInvalidaException("El estado no puede ser nulo");
         }
@@ -81,7 +78,7 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
 
     @Override
     public String toString() {
-        return "clasesVenta.VentaADomicilio{" +
+        return "VentaADomicilio{" +
                 "direccionEntrega='" + direccionEntrega + '\'' +
                 ", costoEnvio=" + costoEnvio +
                 ", estado=" + estado +

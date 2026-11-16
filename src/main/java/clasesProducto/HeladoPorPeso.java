@@ -13,7 +13,7 @@ public class HeladoPorPeso extends Producto {
     ///Metodos
     @Override
     public String toString() {
-        return "clasesProducto.HeladoPorPeso{} " + super.toString();
+        return "HeladoPorPeso{} " + super.toString();
     }
 
     @Override

@@ -63,7 +63,7 @@ public abstract class Producto { //Implementar la interfaz comparable!
     ///Metodos
     @Override
     public String toString() {
-        return "clasesProducto.Producto{" +
+        return "Producto{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", precio=" + precio +
