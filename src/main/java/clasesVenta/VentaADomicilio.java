@@ -1,8 +1,11 @@
 package clasesVenta;
 
+import clasesUsuario.Cliente;
 import enums.EstadoEnvio;
 import excepciones.VentaInvalidaException;
 import interfaz.EnvioADomicilio;
+
+import java.time.LocalDateTime;
 
 public class VentaADomicilio extends Venta implements EnvioADomicilio {
 
@@ -13,14 +16,22 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
     private double costoEnvio;
     private EstadoEnvio estado;
 
-    public VentaADomicilio(String metodoPago, String direccionEntrega) throws VentaInvalidaException {
-        super(metodoPago);
+    public VentaADomicilio(String metodoPago, Cliente cliente, String direccionEntrega) throws VentaInvalidaException {
+        super(metodoPago, cliente);
         if (direccionEntrega == null || direccionEntrega.isBlank())  {
             throw new VentaInvalidaException("La direccion de entrega es obligatoria");
         }
         this.direccionEntrega = direccionEntrega;
         this.costoEnvio = 0;
         this.estado = EstadoEnvio.PENDIENTE; //Toda venta a domicilio arranca pendiente
+    }
+
+    public VentaADomicilio(int id, LocalDateTime fecha, String metodoPago, double total, Cliente cliente,
+                           String direccionEntrega, double costoEnvio, EstadoEnvio estado) {
+        super(id, fecha, metodoPago, total, cliente);
+        this.direccionEntrega = direccionEntrega;
+        this.costoEnvio = costoEnvio;
+        this.estado = estado;
     }
 
     public String getDireccionEntrega() {
@@ -78,11 +89,7 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
 
     @Override
     public String toString() {
-        return "VentaADomicilio{" +
-                "direccionEntrega='" + direccionEntrega + '\'' +
-                ", costoEnvio=" + costoEnvio +
-                ", estado=" + estado +
-                "} " + super.toString();
+        return super.toString() + " | Envío a: " + direccionEntrega + " ($" + costoEnvio + ") [" + estado + "]";
     }
 
 }

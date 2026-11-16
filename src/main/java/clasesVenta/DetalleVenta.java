@@ -1,15 +1,19 @@
 package clasesVenta;
 
 import clasesProducto.Producto;
+import clasesProducto.Sabor;
 import excepciones.VentaInvalidaException;
+
+import java.util.List;
 
 public class DetalleVenta {
 
     private Producto producto;
     private double cantidad;
     private double precioUnitario; //Se guarda aparte por si despues cambia el precio del producto
+    private List<Sabor> sabores;
 
-    public DetalleVenta(Producto producto, double cantidad) throws VentaInvalidaException {
+    public DetalleVenta(Producto producto, double cantidad, List<Sabor> sabores) throws VentaInvalidaException {
         if (producto == null) {
             throw new VentaInvalidaException("El producto no puede ser nulo");
         }
@@ -19,6 +23,7 @@ public class DetalleVenta {
         this.producto = producto;
         this.cantidad = cantidad;
         this.precioUnitario = producto.getPrecio();
+        this.sabores = sabores;
     }
 
     public Producto getProducto() {
@@ -33,9 +38,12 @@ public class DetalleVenta {
         return precioUnitario;
     }
 
-    //Subtotal de la linea = cantidad * precio unitario
+    public List<Sabor> getSabores() {
+        return sabores;
+    }
+
     public double calcularSubtotal() {
-        return cantidad * precioUnitario;
+        return producto.calcularImporte(cantidad);
     }
 
     @Override

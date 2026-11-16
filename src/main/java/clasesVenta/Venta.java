@@ -1,6 +1,8 @@
 package clasesVenta;
 
 import clasesProducto.Producto;
+import clasesProducto.Sabor;
+import clasesUsuario.Cliente;
 import excepciones.StockInsuficienteException;
 import excepciones.VentaInvalidaException;
 import interfaz.Identificable;
@@ -16,18 +18,30 @@ public class Venta implements Identificable {
     private LocalDateTime fecha;
     private String metodoPago;
     private double total;
+    private Cliente cliente;
     private List<DetalleVenta> detalles;
     private boolean confirmada;
 
-    public Venta(String metodoPago) {
+    public Venta(String metodoPago, Cliente cliente) {
         this.id = contador++;
         this.fecha = LocalDateTime.now();
         this.metodoPago = metodoPago;
+        this.cliente = cliente;
         this.total = 0;
         this.detalles = new ArrayList<>();
         this.confirmada = false;
     }
+    public Venta(int id, LocalDateTime fecha, String metodoPago, double total, Cliente cliente) {
+        this.id = id;
+        this.fecha = fecha;
+        this.metodoPago = metodoPago;
+        this.total = total;
+        this.cliente = cliente;
+        this.detalles = new ArrayList<>();
+        this.confirmada = true;
+    }
 
+    @Override
     public int getId() {
         return id;
     }
@@ -42,6 +56,10 @@ public class Venta implements Identificable {
 
     public void setMetodoPago(String metodoPago) {
         this.metodoPago = metodoPago;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public double getTotal() {
@@ -63,14 +81,14 @@ public class Venta implements Identificable {
     }
 
     //Crea el detalle adentro de la venta, validando que haya stock
-    public void agregarDetalle(Producto p, double cantidad) throws StockInsuficienteException, VentaInvalidaException {
+    public void agregarDetalle(Producto p, double cantidad, List<Sabor> sabores) throws StockInsuficienteException, VentaInvalidaException {
         if (confirmada) {
             throw new VentaInvalidaException("La venta ya fue confirmada, no se pueden agregar productos");
         }
         if (p != null && cantidadSolicitada(p) + cantidad > p.getStock()) {
             throw new StockInsuficienteException("No hay stock suficiente de " + p.getNombre());
         }
-        detalles.add(new DetalleVenta(p, cantidad));
+        detalles.add(new DetalleVenta(p, cantidad, sabores));
     }
 
     //Suma cuanto se pidio ya de ese producto en esta venta
@@ -103,23 +121,20 @@ public class Venta implements Identificable {
             throw new VentaInvalidaException("No se puede confirmar una venta sin productos");
         }
         for (DetalleVenta d : detalles) {
-            Producto p = d.getProducto();
-            p.setStock(p.getStock() - (int) Math.ceil(d.getCantidad()));
+            d.getProducto().actualizarStock(-d.getCantidad());
         }
         this.fecha = LocalDateTime.now();
         calcularTotal();
         this.confirmada = true;
+        if(cliente != null) {
+            cliente.agregarVentaAlHistorial(this);
+        }
     }
 
     @Override
     public String toString() {
-        return "Venta{" +
-                "id=" + id +
-                ", fecha=" + fecha +
-                ", metodoPago='" + metodoPago + '\'' +
-                ", total=" + total +
-                ", detalles=" + detalles +
-                '}';
+        return String.format("Venta #%d | Fecha: %s | Pago: %s | Total: $%.2f | Items: %d",
+                id, fecha.toLocalDate(), metodoPago, total, detalles.size());
     }
 
 }
