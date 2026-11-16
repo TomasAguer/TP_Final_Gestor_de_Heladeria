@@ -20,18 +20,20 @@ public class Administrador extends Usuario {
     public String getRol() {
         return "Administrador";
     }
-    public void agregarProducto(Producto p) {
+
+    public void actualizarPrecio(Producto p, double nuevoPrecio) throws PrecioInvalidoException {
         if (p == null) {
             throw new IllegalArgumentException("Hay que indicar un producto");
         }
-    }
-
-    public void actualizarPrecio(Producto p, int nuevoPrecio) throws PrecioInvalidoException {
         p.setPrecio(nuevoPrecio);
     }
 
     public void cambiarEstadoEnvio(VentaADomicilio v, EstadoEnvio e) throws VentaInvalidaException {
+       if(v == null){
+           throw new VentaInvalidaException("La venta a domicilio no puede ser nula");
+       }
         v.actualizarEstado(e);
+
     }
 
     public boolean validarClave(String intento) {

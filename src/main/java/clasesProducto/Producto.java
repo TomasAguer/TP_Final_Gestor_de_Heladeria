@@ -7,11 +7,11 @@ public abstract class Producto { //Implementar la interfaz comparable!
     private static int contador = 1;
     private int id;
     private String nombre;
-    private int precio;
+    private double precio;
     private int stock;
 
     ///Constructor
-    public Producto(String nombre, int precio, int stock) {
+    public Producto(String nombre, double precio, int stock) {
         this.id = contador++;
         this.nombre = nombre;
         this.precio = precio;
@@ -44,11 +44,11 @@ public abstract class Producto { //Implementar la interfaz comparable!
         this.nombre = nombre;
     }
 
-    public int getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
