@@ -113,7 +113,7 @@ public class Venta implements Identificable {
     }
 
     //Cierra la venta: al menos un detalle y se descuenta el stock
-    public void confirmarVenta() throws VentaInvalidaException {
+    public void confirmarVenta() throws VentaInvalidaException, StockInsuficienteException {
         if (confirmada) {
             throw new VentaInvalidaException("La venta esta confirmada");
         }

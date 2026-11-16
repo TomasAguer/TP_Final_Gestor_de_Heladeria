@@ -1,8 +1,11 @@
 package clasesProducto;
 
+import excepciones.StockInsuficienteException;
+import excepciones.VentaInvalidaException;
+
 import java.util.Objects;
 
-public abstract class Producto { //Implementar la interfaz comparable!
+public abstract class Producto implements Comparable<Producto> { //Implementar la interfaz comparable!
 
     private static int contador = 1;
     private int id;
@@ -23,18 +26,10 @@ public abstract class Producto { //Implementar la interfaz comparable!
     }
 
     ///Gets and Sets
-    public static int getContador() {
-        return contador;
-    }
-
-    public static void setContador(int contador) {
-        Producto.contador = contador;
-    }
-
+    ///
     public int getId() {
         return id;
     }
-
 
     public String getNombre() {
         return nombre;
@@ -78,10 +73,18 @@ public abstract class Producto { //Implementar la interfaz comparable!
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, nombre, precio, stock);
+    public int compareTo(Producto otro) {
+        return Double.compare(this.precio, otro.precio);
     }
 
-    public abstract double calcularImporte();
+    public  void actualizarStock(double cantidad)throws StockInsuficienteException{
+        if (stock < cantidad) {
+            throw new StockInsuficienteException("Stock insuficiente");
+        }
+        stock -= cantidad;
+
+        System.out.println("Stock actualizado");
+    }
+    public abstract double calcularImporte(double cantidad);
 
 }

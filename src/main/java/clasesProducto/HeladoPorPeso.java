@@ -17,8 +17,14 @@ public class HeladoPorPeso extends Producto {
     }
 
     @Override
-    public double calcularImporte() {
-        return 0;
+    //Llevando 2kilos o mas medio kilo de regalo
+    public double calcularImporte(double cantidad) {
+        double importe = getPrecio()*cantidad;
+        if (cantidad >=2){
+            importe = importe - (getPrecio()*0.5);
+        }
+
+        return importe;
     }
 
 }
