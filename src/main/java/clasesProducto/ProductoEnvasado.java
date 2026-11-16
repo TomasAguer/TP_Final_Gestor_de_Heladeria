@@ -26,18 +26,12 @@ public class ProductoEnvasado extends Producto {
 
     ///Metodos
     @Override
-    public double calcularImporte(double cantidad) throws VentaInvalidaException {
-        double importe = getPrecio()*cantidad;
+    public double calcularImporte(double cantidad)  {
+
         if (cantidad <= 0){
-           throw new VentaInvalidaException("El cantidad debe ser mayor a 0");
+           throw new IllegalArgumentException("El cantidad debe ser mayor a 0");
        }
-       if (tipo == TipoProducto.PALITO_BOMBON){
-           return importe + 500;
-       }
-       if (tipo == TipoProducto.ESCOCES || tipo == TipoProducto.SUIZO){
-           return importe + 800;
-       }
-        return getPrecio() * cantidad;
+        return  tipo.getPrecio()*cantidad;
     }
 
     @Override
