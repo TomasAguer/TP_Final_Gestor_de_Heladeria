@@ -7,7 +7,7 @@ import interfaz.Identificable;
 import java.util.Objects;
 
 public abstract class Producto implements Comparable<Producto>, Identificable { //Implementar la interfaz comparable!
-
+    private static int contador = 1;
     private int id;
     private String nombre;
     private double precio;
@@ -15,6 +15,7 @@ public abstract class Producto implements Comparable<Producto>, Identificable { 
 
     ///Constructor
     public Producto(String nombre, double precio, int stock) {
+        this.id = contador++;
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;

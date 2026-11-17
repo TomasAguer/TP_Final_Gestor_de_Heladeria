@@ -5,6 +5,7 @@ import clasesProducto.Sabor;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 
 public class SaborRepositorio extends RepositorioJDBC<Sabor> {
@@ -40,5 +41,25 @@ public class SaborRepositorio extends RepositorioJDBC<Sabor> {
                 rs.getString("descripcion"),
                 rs.getBoolean("disponible")
         );
+    }
+
+    @Override
+    public void guardar(Sabor sabor) throws SQLException {
+        super.guardar(sabor);
+    }
+
+    @Override
+    public Sabor buscarPorId(int id) throws SQLException {
+        return super.buscarPorId(id);
+    }
+
+    @Override
+    public List<Sabor> listarTodos() throws SQLException {
+        return super.listarTodos();
+    }
+
+    @Override
+    public boolean eliminar(int id) throws SQLException {
+        return super.eliminar(id);
     }
 }

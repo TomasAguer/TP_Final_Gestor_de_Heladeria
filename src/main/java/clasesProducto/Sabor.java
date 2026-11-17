@@ -3,13 +3,14 @@ package clasesProducto;
 import interfaz.Identificable;
 
 public class Sabor implements Identificable {
-
+    private static int contador = 1;
     private int id;
     private String nombre;
     private String descripcion;
     private boolean disponible;
 
     public Sabor(String nombre, String descripcion) {
+        this.id = contador++;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.disponible = true;

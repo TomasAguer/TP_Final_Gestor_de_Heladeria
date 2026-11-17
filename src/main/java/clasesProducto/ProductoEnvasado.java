@@ -30,6 +30,7 @@ public class ProductoEnvasado extends Producto {
         this.tipo = tipo;
     }
 
+
     ///Metodos
     @Override
     public double calcularImporte(double cantidad)  {
