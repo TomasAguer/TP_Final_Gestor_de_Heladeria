@@ -8,13 +8,19 @@ public class ProductoEnvasado extends Producto {
     private TipoProducto tipo;
 
     ///Constructor
-    public ProductoEnvasado(String nombre, int precio, int stock, TipoProducto tipo) {
+    public ProductoEnvasado(String nombre, double precio, int stock, TipoProducto tipo) {
         super(nombre, precio, stock);
         this.tipo = tipo;
     }
+
     public ProductoEnvasado(){
     }
 
+    ///Constructor para la base de datos
+    public ProductoEnvasado(int id, String nombre, double precio, int stock, TipoProducto tipo) {
+        super(id, nombre, precio, stock);
+        this.tipo = tipo;
+    }
     ///Gets and Sets
     public TipoProducto getTipo() {
         return tipo;

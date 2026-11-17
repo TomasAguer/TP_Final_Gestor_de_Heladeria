@@ -14,6 +14,11 @@ public class HeladoPorPeso extends Producto {
     public HeladoPorPeso() {
     }
 
+    ///Constructor para la base de datos
+    public HeladoPorPeso(int id, String nombre, double precio, int stock, PesoHelados peso) {
+        super(id, nombre, precio, stock);
+        this.peso = peso;
+    }
 
     @Override
     public String toString() {

@@ -1,16 +1,25 @@
 package clasesProducto;
 
-public class Sabor {
+import interfaz.Identificable;
+
+public class Sabor implements Identificable {
+
     private int id;
     private String nombre;
     private String descripcion;
     private boolean disponible;
 
-    public Sabor(int id, String nombre, String descripcion) {
-        this.id = id;
+    public Sabor(String nombre, String descripcion) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.disponible = true;
+    }
+    ///Constructor para la base de datos:concepto llamado sobrecarga de constructores
+    public Sabor(int id, String nombre, String descripcion, boolean disponible) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.disponible = disponible;
     }
 
     public void activar(){
@@ -25,9 +34,14 @@ public class Sabor {
         this.nombre = nombre;
         this.descripcion = descripcion;
     }
-
+    @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
