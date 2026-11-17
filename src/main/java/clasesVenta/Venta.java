@@ -126,7 +126,7 @@ public class Venta implements Identificable {
             throw new VentaInvalidaException("No se puede confirmar una venta sin productos");
         }
         for (DetalleVenta d : detalles) {
-            d.getProducto().actualizarStock(-d.getCantidad());
+            d.getProducto().actualizarStock(d.getCantidad());
         }
         this.fecha = LocalDateTime.now();
         calcularTotal();
