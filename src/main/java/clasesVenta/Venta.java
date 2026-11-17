@@ -46,6 +46,11 @@ public class Venta implements Identificable {
         return id;
     }
 
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public LocalDateTime getFecha() {
         return fecha;
     }
