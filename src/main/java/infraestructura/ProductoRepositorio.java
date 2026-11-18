@@ -16,6 +16,16 @@ public class ProductoRepositorio extends RepositorioJDBC<Producto> {
         super();
     }
 
+    public void actualizarStockYPrecio(Producto p) throws SQLException {
+        String sql = "UPDATE productos SET precio = ?, stock = ? WHERE id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setDouble(1, p.getPrecio());
+            ps.setDouble(2, p.getStock());
+            ps.setInt(3, p.getId());
+            ps.executeUpdate();
+        }
+    }
+
     @Override
     protected String getTabla() {
         return "Productos";
