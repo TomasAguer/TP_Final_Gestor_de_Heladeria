@@ -237,8 +237,20 @@ public class Main {
             cliente = clienteRepo.buscarPorId(idCliente);
         }
 
-        System.out.print("Método de pago (Efectivo / Tarjeta / MP): ");
-        String pago = sc.nextLine();
+        System.out.print("Método de pago (1: Efectivo | 2: Transferencia | 3: MP): ");
+        int opPago = sc.nextInt();
+        sc.nextLine();
+
+        String pago;
+        if (opPago == 1) {
+            pago = "Efectivo";
+        } else if (opPago == 2) {
+            pago = "Transferencia";
+        } else if (opPago == 3) {
+            pago = "MP";
+        } else {
+            throw new VentaInvalidaException("Método de pago inválido.");
+        }
 
         System.out.print("¿Es envío a domicilio? (s/n): ");
         String respEnvio = sc.nextLine();
@@ -327,24 +339,47 @@ public class Main {
             return;
         }
 
-        System.out.print("ID del producto a modificar: ");
-        int idProd = sc.nextInt();
+        System.out.println("--- PANEL ADMINISTRADOR ---");
+        System.out.println("1. Modificar precio de un producto");
+        System.out.println("2. Listar clientes registrados");
+        System.out.print("Seleccione una opción: ");
+        int op = sc.nextInt();
         sc.nextLine();
 
-        Producto p = productoRepo.buscarPorId(idProd);
-        if (p == null) {
-            System.out.println("Producto no encontrado.");
-            return;
+        if (op == 1) {
+            System.out.print("ID del producto a modificar: ");
+            int idProd = sc.nextInt();
+            sc.nextLine();
+
+            Producto p = productoRepo.buscarPorId(idProd);
+            if (p == null) {
+                System.out.println("Producto no encontrado.");
+                return;
+            }
+
+            System.out.print("Nuevo precio: ");
+            double nuevoPrecio = sc.nextDouble();
+            sc.nextLine();
+
+            admin.actualizarPrecio(p, nuevoPrecio);
+            productoRepo.actualizarStockYPrecio(p);
+            System.out.println("Precio actualizado en BD.");
+
+        } else if (op == 2) {
+            System.out.println("--- CLIENTES REGISTRADOS ---");
+            List<Cliente> clientes = clienteRepo.listarTodos();
+            if (clientes.isEmpty()) {
+                System.out.println("No hay clientes registrados.");
+            } else {
+                for (Cliente c : clientes) {
+                    System.out.println(c);
+                }
+            }
+        } else {
+            System.out.println("Opción inválida.");
         }
-
-        System.out.print("Nuevo precio: ");
-        double nuevoPrecio = sc.nextDouble();
-        sc.nextLine();
-
-        admin.actualizarPrecio(p, nuevoPrecio);
-        productoRepo.actualizarStockYPrecio(p);
-        System.out.println("Precio actualizado en BD.");
     }
+
 
     private static void verDetalleVenta() throws SQLException {
         System.out.print("ID de la venta: ");
