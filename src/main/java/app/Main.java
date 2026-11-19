@@ -361,11 +361,13 @@ public class Main {
         System.out.println("1. Modificar precio de un producto");
         System.out.println("2. Listar clientes registrados");
         System.out.println("3. Eliminar admin actual");
+        System.out.println("4. Eliminar producto ");
         System.out.print("Seleccione una opción: ");
         int op = sc.nextInt();
         sc.nextLine();
 
         if (op == 1) {
+            listarProductosOrdenados();
             System.out.print("ID del producto a modificar: ");
             int idProd = sc.nextInt();
             sc.nextLine();
@@ -401,7 +403,10 @@ public class Main {
                 System.out.println("Administrador eliminado.");
                 return null;
             }
-        } else {
+        } else if (op == 4) {
+            eliminarProducto();
+         }
+        else {
             System.out.println("Opción inválida.");
         }
         return admin;
@@ -484,6 +489,32 @@ public class Main {
         System.out.println("Estado actualizado a " + vd.getEstado());
         if (vd.getEstado() == EstadoEnvio.CANCELADO) {
             System.out.println("Se devolvieron los productos al stock.");
+        }
+    }
+    private static void eliminarProducto() throws SQLException {
+        System.out.println("--- ELIMINAR PRODUCTO ---");
+        listarProductosOrdenados();
+        System.out.print("Ingrese el ID del producto a eliminar: ");
+        int idProd = sc.nextInt();
+        sc.nextLine();
+
+        Producto prod = productoRepo.buscarPorId(idProd);
+        if (prod == null) {
+            System.out.println("No se encontró un producto con ese ID.");
+            return;
+        }
+
+        System.out.print("¿Seguro que desea eliminar '" + prod.getNombre() + "'? (s/n): ");
+        String confirmacion = sc.nextLine();
+        if (confirmacion.equalsIgnoreCase("s")) {
+            boolean eliminado = productoRepo.eliminar(idProd);
+            if (eliminado) {
+                System.out.println("Producto eliminado con éxito.");
+            } else {
+                System.out.println("No se pudo eliminar el producto.");
+            }
+        } else {
+            System.out.println("Operación cancelada.");
         }
     }
 
