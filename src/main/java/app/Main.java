@@ -15,10 +15,10 @@ import enums.TipoProducto;
 import excepciones.PrecioInvalidoException;
 import excepciones.StockInsuficienteException;
 import excepciones.VentaInvalidaException;
-import infraestructura.ClienteRepositorio;
-import infraestructura.ProductoRepositorio;
-import infraestructura.SaborRepositorio;
-import infraestructura.VentaRepositorio;
+import infraestructura.ClienteDAO;
+import infraestructura.ProductoDAO;
+import infraestructura.SaborDAO;
+import infraestructura.VentaDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,18 +29,18 @@ import java.util.Scanner;
 
 public class Main {
     private static Scanner sc = new Scanner(System.in);
-    private static ProductoRepositorio productoRepo;
-    private static SaborRepositorio saborRepo;
-    private static ClienteRepositorio clienteRepo;
-    private static VentaRepositorio ventaRepo;
+    private static ProductoDAO productoRepo;
+    private static SaborDAO saborRepo;
+    private static ClienteDAO clienteRepo;
+    private static VentaDAO ventaRepo;
 
     public static void main(String[] args) {
         Administrador admin = null;
         try {
-            productoRepo = new ProductoRepositorio();
-            saborRepo = new SaborRepositorio();
-            clienteRepo = new ClienteRepositorio();
-            ventaRepo = new VentaRepositorio();
+            productoRepo = new ProductoDAO();
+            saborRepo = new SaborDAO();
+            clienteRepo = new ClienteDAO();
+            ventaRepo = new VentaDAO();
 
             int opcion = -1;
             do {

@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class SaborRepositorio extends RepositorioJDBC<Sabor> {
+public class SaborDAO extends RepositorioJDBC<Sabor> {
 
-    public SaborRepositorio() throws SQLException {
+    public SaborDAO() throws SQLException {
         super();
     }
 

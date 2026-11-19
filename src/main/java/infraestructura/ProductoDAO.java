@@ -10,9 +10,9 @@ import enums.PesoHelado;
 import java.sql.Types;
 import java.util.List;
 
-public class ProductoRepositorio extends RepositorioJDBC<Producto> {
+public class ProductoDAO extends RepositorioJDBC<Producto> {
 
-    public ProductoRepositorio() throws SQLException {
+    public ProductoDAO() throws SQLException {
         super();
     }
 

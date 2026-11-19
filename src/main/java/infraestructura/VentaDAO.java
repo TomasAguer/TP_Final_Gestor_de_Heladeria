@@ -12,15 +12,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VentaRepositorio extends RepositorioJDBC<Venta> {
+public class VentaDAO extends RepositorioJDBC<Venta> {
 
-    private ClienteRepositorio clienteRepo;
-    private ProductoRepositorio productoRepo;
+    private ClienteDAO clienteRepo;
+    private ProductoDAO productoRepo;
 
-    public VentaRepositorio() throws SQLException {
+    public VentaDAO() throws SQLException {
         super();
-        this.clienteRepo = new ClienteRepositorio();
-        this.productoRepo = new ProductoRepositorio();
+        this.clienteRepo = new ClienteDAO();
+        this.productoRepo = new ProductoDAO();
     }
 
     @Override

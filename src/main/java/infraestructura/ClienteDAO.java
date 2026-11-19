@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ClienteRepositorio extends RepositorioJDBC<Cliente> {
+public class ClienteDAO extends RepositorioJDBC<Cliente> {
 
-    public ClienteRepositorio() throws SQLException{
+    public ClienteDAO() throws SQLException{
         super();
     }
 
