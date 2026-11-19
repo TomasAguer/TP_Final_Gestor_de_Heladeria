@@ -1,5 +1,6 @@
 package infraestructura;
 
+import clasesProducto.Producto;
 import clasesProducto.Sabor;
 import clasesUsuario.Cliente;
 import clasesVenta.DetalleVenta;
@@ -8,15 +9,18 @@ import clasesVenta.VentaADomicilio;
 import enums.EstadoEnvio;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VentaRepositorio extends RepositorioJDBC<Venta> {
 
     private ClienteRepositorio clienteRepo;
+    private ProductoRepositorio productoRepo;
 
     public VentaRepositorio() throws SQLException {
         super();
         this.clienteRepo = new ClienteRepositorio();
+        this.productoRepo = new ProductoRepositorio();
     }
 
     @Override
@@ -121,5 +125,72 @@ public class VentaRepositorio extends RepositorioJDBC<Venta> {
                     EstadoEnvio.valueOf(rs.getString("estado_envio")));
         }
         return new Venta(id, fecha.toLocalDateTime(), metodoPago, total, cliente);
+    }
+
+    //Busca una venta por id y le carga sus productos
+    public Venta buscarConDetalles(int id) throws SQLException {
+        Venta v = buscarPorId(id);
+        if (v == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM detalle_ventas WHERE venta_id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Producto p = productoRepo.buscarPorId(rs.getInt("producto_id"));
+                    DetalleVenta d = new DetalleVenta(p, rs.getDouble("cantidad"),
+                            rs.getDouble("precio_unitario"), textoASabores(rs.getString("sabores_elegidos")));
+                    v.restaurarDetalle(d);
+                }
+            }
+        }
+        return v;
+    }
+
+    //Convierte "Chocolate, Frutilla" en una lista de sabores (lo contrario de saboresATexto)
+    private List<Sabor> textoASabores(String texto) {
+        List<Sabor> lista = new ArrayList<>();
+        if (texto == null || texto.isBlank()) {
+            return lista;
+        }
+        for (String nombre : texto.split(", ")) {
+            lista.add(new Sabor(0, nombre, "", true));
+        }
+        return lista;
+    }
+
+    //Guarda en la base el nuevo estado de un envio. Si se cancela, devuelve los productos al stock
+    public void actualizarEstadoEnvio(VentaADomicilio v) throws SQLException {
+        conexion.setAutoCommit(false);
+        try {
+            String sql = "UPDATE ventas SET estado_envio = ? WHERE id = ?";
+            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+                ps.setString(1, v.getEstado().name());
+                ps.setInt(2, v.getId());
+                ps.executeUpdate();
+            }
+            if (v.getEstado() == EstadoEnvio.CANCELADO) {
+                reponerStock(v);
+            }
+            conexion.commit();
+        } catch (SQLException | RuntimeException e) {
+            conexion.rollback(); //Si algo falla no se cambia el estado ni el stock
+            throw e;
+        } finally {
+            conexion.setAutoCommit(true);
+        }
+    }
+
+    //Suma al stock lo que se habia vendido en la venta
+    private void reponerStock(Venta v) throws SQLException {
+        String sql = "UPDATE productos SET stock = stock + ? WHERE id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            for (DetalleVenta d : v.getDetalles()) {
+                ps.setDouble(1, d.getCantidad());
+                ps.setInt(2, d.getProducto().getId());
+                ps.executeUpdate();
+            }
+        }
     }
 }

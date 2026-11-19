@@ -8,6 +8,7 @@ import excepciones.VentaInvalidaException;
 import interfaz.Identificable;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,15 +86,33 @@ public class Venta implements Identificable {
         return new ArrayList<>(detalles);
     }
 
+    //Agrega un detalle leido de la base de datos, sin validar ni tocar el stock
+    public void restaurarDetalle(DetalleVenta d) {
+        detalles.add(d);
+    }
+
     //Crea el detalle adentro de la venta, validando que haya stock
     public void agregarDetalle(Producto p, double cantidad, List<Sabor> sabores) throws StockInsuficienteException, VentaInvalidaException {
         if (confirmada) {
             throw new VentaInvalidaException("La venta ya fue confirmada, no se pueden agregar productos");
         }
+        if (p != null) {
+            p = productoYaAgregado(p);
+        }
         if (p != null && cantidadSolicitada(p) + cantidad > p.getStock()) {
             throw new StockInsuficienteException("No hay stock suficiente de " + p.getNombre());
         }
         detalles.add(new DetalleVenta(p, cantidad, sabores));
+    }
+
+    //Si el producto ya esta en la venta devuelve ese mismo objeto, si no devuelve el que llego
+    private Producto productoYaAgregado(Producto p) {
+        for (DetalleVenta d : detalles) {
+            if (d.getProducto().getId() == p.getId()) {
+                return d.getProducto();
+            }
+        }
+        return p;
     }
 
     //Suma cuanto se pidio ya de ese producto en esta venta
@@ -136,10 +155,33 @@ public class Venta implements Identificable {
         }
     }
 
+    //Lineas extra del ticket, VentaADomicilio la sobrescribe para mostrar el envio
+    protected String datosExtra() {
+        return "";
+    }
+
     @Override
     public String toString() {
-        return String.format("Venta #%d | Fecha: %s | Pago: %s | Total: $%.2f | Items: %d",
-                id, fecha.toLocalDate(), metodoPago, total, detalles.size());
+        String texto = "========== VENTA #" + id + " ==========\n";
+        texto += "Fecha:   " + fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n";
+        if (cliente != null) {
+            texto += "Cliente: " + cliente.getNombre() + "\n";
+        } else {
+            texto += "Cliente: Venta de mostrador\n";
+        }
+        texto += "Pago:    " + metodoPago + "\n";
+
+        if (!detalles.isEmpty()) {
+            texto += "Productos:\n";
+            for (DetalleVenta d : detalles) {
+                texto += d + "\n";
+            }
+        }
+
+        texto += datosExtra();
+        texto += String.format("TOTAL:   $%.2f%n", total);
+        texto += "==============================";
+        return texto;
     }
 
 }

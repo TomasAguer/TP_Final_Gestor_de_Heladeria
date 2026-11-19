@@ -26,6 +26,14 @@ public class DetalleVenta {
         this.sabores = sabores;
     }
 
+    //Constructor para la base de datos: usa el precio que se guardo al momento de la venta
+    public DetalleVenta(Producto producto, double cantidad, double precioUnitario, List<Sabor> sabores) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.sabores = sabores;
+    }
+
     public Producto getProducto() {
         return producto;
     }
@@ -48,12 +56,27 @@ public class DetalleVenta {
 
     @Override
     public String toString() {
-        return "DetalleVenta{" +
-                "producto=" + producto.getNombre() +
-                ", cantidad=" + cantidad +
-                ", precioUnitario=" + precioUnitario +
-                ", subtotal=" + calcularSubtotal() +
-                '}';
+        //Si la cantidad es entera muestro "2" en vez de "2.0"
+        String cant;
+        if (cantidad == (int) cantidad) {
+            cant = String.valueOf((int) cantidad);
+        } else {
+            cant = String.valueOf(cantidad);
+        }
+
+        String texto = String.format("  - %s x %s ($%.2f c/u) -> $%.2f",
+                cant, producto.getNombre(), precioUnitario, calcularSubtotal());
+
+        if (sabores != null && !sabores.isEmpty()) {
+            texto += "\n      Sabores: ";
+            for (int i = 0; i < sabores.size(); i++) {
+                if (i > 0) {
+                    texto += ", ";
+                }
+                texto += sabores.get(i).getNombre();
+            }
+        }
+        return texto;
     }
 
 }

@@ -9,6 +9,7 @@ import clasesUsuario.Cliente;
 import clasesVenta.DetalleVenta;
 import clasesVenta.Venta;
 import clasesVenta.VentaADomicilio;
+import enums.EstadoEnvio;
 import enums.PesoHelado;
 import enums.TipoProducto;
 import excepciones.PrecioInvalidoException;
@@ -78,6 +79,12 @@ public class Main {
                         case 8:
                             menuAdministrador(admin);
                             break;
+                        case 9:
+                            verDetalleVenta();
+                            break;
+                        case 10:
+                            cambiarEstadoEnvio(admin);
+                            break;
                         case 0:
                             System.out.println("Cerrando sistema...");
                             break;
@@ -115,6 +122,8 @@ public class Main {
         System.out.println("6. Nueva Venta (Mostrador / A Domicilio)");
         System.out.println("7. Historial de Ventas");
         System.out.println("8. Panel Administrador");
+        System.out.println("9. Ver detalle de una venta");
+        System.out.println("10. Cambiar estado de un envío");
         System.out.println("0. Salir");
     }
 
@@ -337,5 +346,83 @@ public class Main {
         System.out.println("Precio actualizado en BD.");
     }
 
+    private static void verDetalleVenta() throws SQLException {
+        System.out.print("ID de la venta: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        Venta v = ventaRepo.buscarConDetalles(id);
+        if (v == null) {
+            System.out.println("No existe una venta con ese ID.");
+            return;
+        }
+
+        System.out.println("--- DETALLE DE LA VENTA #" + v.getId() + " ---");
+        System.out.println("Fecha: " + v.getFecha().toLocalDate() + " | Pago: " + v.getMetodoPago());
+        if (v.getCliente() != null) {
+            System.out.println("Cliente: " + v.getCliente().getNombre());
+        } else {
+            System.out.println("Cliente: venta de mostrador");
+        }
+
+        for (DetalleVenta d : v.getDetalles()) {
+            String linea = "- " + d.getCantidad() + " x " + d.getProducto().getNombre()
+                    + " ($" + d.getPrecioUnitario() + " c/u)";
+            if (!d.getSabores().isEmpty()) {
+                linea += " | Sabores: ";
+                for (Sabor s : d.getSabores()) {
+                    linea += s.getNombre() + " ";
+                }
+            }
+            System.out.println(linea);
+        }
+
+        if (v instanceof VentaADomicilio) {
+            VentaADomicilio vd = (VentaADomicilio) v;
+            System.out.println("Envío a: " + vd.getDireccionEntrega() + " | Costo: $" + vd.getCostoEnvio()
+                    + " | Estado: " + vd.getEstado());
+        }
+        System.out.println("TOTAL: $" + v.getTotal());
+    }
+
+    private static void cambiarEstadoEnvio(Administrador admin) throws SQLException, VentaInvalidaException {
+        System.out.print("Clave de administrador: ");
+        String clave = sc.nextLine();
+        if (!admin.validarClave(clave)) {
+            System.out.println("Clave incorrecta.");
+            return;
+        }
+
+        System.out.print("ID de la venta a domicilio: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        Venta v = ventaRepo.buscarConDetalles(id);
+        if (!(v instanceof VentaADomicilio)) {
+            System.out.println("No existe una venta a domicilio con ese ID.");
+            return;
+        }
+        VentaADomicilio vd = (VentaADomicilio) v;
+
+        System.out.println("Estado actual: " + vd.getEstado());
+        EstadoEnvio[] estados = EstadoEnvio.values();
+        for (int i = 0; i < estados.length; i++) {
+            System.out.println((i + 1) + ". " + estados[i]);
+        }
+        System.out.print("Nuevo estado: ");
+        int op = sc.nextInt();
+        sc.nextLine();
+        if (op < 1 || op > estados.length) {
+            System.out.println("Opción inválida.");
+            return;
+        }
+
+        admin.cambiarEstadoEnvio(vd, estados[op - 1]);
+        ventaRepo.actualizarEstadoEnvio(vd);
+        System.out.println("Estado actualizado a " + vd.getEstado());
+        if (vd.getEstado() == EstadoEnvio.CANCELADO) {
+            System.out.println("Se devolvieron los productos al stock.");
+        }
+    }
 
 }

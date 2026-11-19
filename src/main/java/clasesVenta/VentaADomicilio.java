@@ -87,9 +87,13 @@ public class VentaADomicilio extends Venta implements EnvioADomicilio {
         this.estado = nuevo;
     }
 
+    //Agrega los datos del envio al ticket de la venta
     @Override
-    public String toString() {
-        return super.toString() + " | Envío a: " + direccionEntrega + " ($" + costoEnvio + ") [" + estado + "]";
+    protected String datosExtra() {
+        String texto = "Envío a: " + direccionEntrega + "\n";
+        texto += String.format("Envío:   $%.2f%n", costoEnvio);
+        texto += "Estado:  " + estado + "\n";
+        return texto;
     }
 
 }
