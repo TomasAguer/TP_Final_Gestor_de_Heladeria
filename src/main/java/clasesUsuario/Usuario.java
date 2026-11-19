@@ -8,6 +8,9 @@ public abstract class Usuario implements Identificable {
     private String email;
 
     protected Usuario(int id, String nombre, String email) {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("El email debe contener '@'.");
+        }
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -37,6 +40,9 @@ public abstract class Usuario implements Identificable {
     }
 
     public void setEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("El email debe contener '@'.");
+        }
         this.email = email;
     }
 

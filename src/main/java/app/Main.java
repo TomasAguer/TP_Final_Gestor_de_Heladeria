@@ -35,8 +35,7 @@ public class Main {
     private static VentaRepositorio ventaRepo;
 
     public static void main(String[] args) {
-        Administrador admin = new Administrador(1, "Tomás", "admin@heladeria.com", "1234");
-
+        Administrador admin = null;
         try {
             productoRepo = new ProductoRepositorio();
             saborRepo = new SaborRepositorio();
@@ -77,12 +76,14 @@ public class Main {
                             listarVentas();
                             break;
                         case 8:
-                            menuAdministrador(admin);
+                            admin = verificarOCrearAdmin(admin);
+                            admin = menuAdministrador(admin);
                             break;
                         case 9:
                             verDetalleVenta();
                             break;
                         case 10:
+                            admin = verificarOCrearAdmin(admin);
                             cambiarEstadoEnvio(admin);
                             break;
                         case 0:
@@ -125,6 +126,23 @@ public class Main {
         System.out.println("9. Ver detalle de una venta");
         System.out.println("10. Cambiar estado de un envío");
         System.out.println("0. Salir");
+    }
+
+    private static Administrador verificarOCrearAdmin(Administrador admin) {
+        if (admin == null) {
+            System.out.println("--- CREAR ADMINISTRADOR ---");
+            System.out.println("No hay un administrador registrado. Complete los datos:");
+            System.out.print("Nombre: ");
+            String nombre = sc.nextLine();
+            System.out.print("Email: ");
+            String email = sc.nextLine();
+            System.out.print("Cree una clave: ");
+            String clave = sc.nextLine();
+
+            admin = new Administrador(1, nombre, email, clave);
+            System.out.println("Administrador creado con éxito.\n");
+        }
+        return admin;
     }
 
     private static void altaProducto() throws SQLException {
@@ -331,17 +349,18 @@ public class Main {
         }
     }
 
-    private static void menuAdministrador(Administrador admin) throws SQLException, PrecioInvalidoException {
+    private static Administrador menuAdministrador(Administrador admin) throws SQLException, PrecioInvalidoException {
         System.out.print("Clave de administrador: ");
         String clave = sc.nextLine();
         if (!admin.validarClave(clave)) {
             System.out.println("Clave incorrecta.");
-            return;
+            return admin;
         }
 
         System.out.println("--- PANEL ADMINISTRADOR ---");
         System.out.println("1. Modificar precio de un producto");
         System.out.println("2. Listar clientes registrados");
+        System.out.println("3. Eliminar admin actual");
         System.out.print("Seleccione una opción: ");
         int op = sc.nextInt();
         sc.nextLine();
@@ -354,7 +373,7 @@ public class Main {
             Producto p = productoRepo.buscarPorId(idProd);
             if (p == null) {
                 System.out.println("Producto no encontrado.");
-                return;
+                return admin;
             }
 
             System.out.print("Nuevo precio: ");
@@ -375,9 +394,17 @@ public class Main {
                     System.out.println(c);
                 }
             }
+        } else if (op == 3) {
+            System.out.print("¿Seguro que desea eliminar al administrador actual? (s/n): ");
+            String conf = sc.nextLine();
+            if (conf.equalsIgnoreCase("s")) {
+                System.out.println("Administrador eliminado.");
+                return null;
+            }
         } else {
             System.out.println("Opción inválida.");
         }
+        return admin;
     }
 
 
